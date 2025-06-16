@@ -5,7 +5,8 @@ function Clientes() {
     <div className="container">
       <h2>Gestión de Clientes</h2>
       <Button variant="primary" className="mb-3">Registrar Cliente</Button>
-
+  
+  
       <Table striped bordered hover>
         <thead>
           <tr>

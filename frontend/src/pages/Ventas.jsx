@@ -12,6 +12,7 @@ function Ventas() {
             <option>Juan Pérez</option>
             <option>María García</option>
           </Form.Select>
+          
         </Form.Group>
 
         <Form.Group className="mb-3">

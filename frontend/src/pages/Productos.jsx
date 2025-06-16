@@ -9,6 +9,7 @@ function Productos() {
       <Table striped bordered hover>
         <thead>
           <tr>
+            
             <th>#</th>
             <th>Nombre</th>
             <th>Precio</th>
