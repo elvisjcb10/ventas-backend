@@ -1,39 +1,63 @@
-const db = require('../db/connection');
+const clienteModel = require('../models/cliente.model');
 
-const obtenerClientes = (callback) => {
-  db.query('SELECT * FROM clientes', callback);
+// GET /api/clientes
+exports.obtenerClientes = async (req, res) => {
+  try {
+    const clientes = await clienteModel.obtenerClientes();
+    res.json(clientes);
+  } catch (error) {
+    res.status(500).json({ mensaje: 'Error al obtener clientes', error });
+  }
 };
 
-const obtenerClientePorId = (id, callback) => {
-  db.query('SELECT * FROM clientes WHERE id = ?', [id], callback);
+// GET /api/clientes/:id
+exports.obtenerClientePorId = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const cliente = await clienteModel.obtenerClientePorId(id);
+    if (!cliente) {
+      return res.status(404).json({ mensaje: 'Cliente no encontrado' });
+    }
+    res.json(cliente);
+  } catch (error) {
+    res.status(500).json({ mensaje: 'Error al obtener cliente', error });
+  }
 };
 
-const crearCliente = (datos, callback) => {
-  const { nombre, documento_identidad, direccion, telefono } = datos;
-  db.query(
-    'INSERT INTO clientes (nombre, documento_identidad, direccion, telefono) VALUES (?, ?, ?, ?)',
-    [nombre, documento_identidad, direccion, telefono],
-    callback
-  );
+// POST /api/clientes
+exports.crearCliente = async (req, res) => {
+  try {
+    await clienteModel.crearCliente(req.body);
+    res.status(201).json({ mensaje: 'Cliente creado correctamente' });
+  } catch (error) {
+    res.status(500).json({ mensaje: 'Error al crear cliente', error });
+  }
 };
 
-const actualizarCliente = (id, datos, callback) => {
-  const { nombre, documento_identidad, direccion, telefono } = datos;
-  db.query(
-    'UPDATE clientes SET nombre = ?, documento_identidad = ?, direccion = ?, telefono = ? WHERE id = ?',
-    [nombre, documento_identidad, direccion, telefono, id],
-    callback
-  );
+// PUT /api/clientes/:id
+exports.actualizarCliente = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const resultado = await clienteModel.actualizarCliente(id, req.body);
+    if (resultado === 0) {
+      return res.status(404).json({ mensaje: 'Cliente no encontrado' });
+    }
+    res.json({ mensaje: 'Cliente actualizado correctamente' });
+  } catch (error) {
+    res.status(500).json({ mensaje: 'Error al actualizar cliente', error });
+  }
 };
 
-const eliminarCliente = (id, callback) => {
-  db.query('DELETE FROM clientes WHERE id = ?', [id], callback);
-};
-
-module.exports = {
-  obtenerClientes,
-  obtenerClientePorId,
-  crearCliente,
-  actualizarCliente,
-  eliminarCliente,
+// DELETE /api/clientes/:id
+exports.eliminarCliente = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const resultado = await clienteModel.eliminarCliente(id);
+    if (resultado === 0) {
+      return res.status(404).json({ mensaje: 'Cliente no encontrado' });
+    }
+    res.json({ mensaje: 'Cliente eliminado correctamente' });
+  } catch (error) {
+    res.status(500).json({ mensaje: 'Error al eliminar cliente', error });
+  }
 };
